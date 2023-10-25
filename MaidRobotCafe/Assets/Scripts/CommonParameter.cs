@@ -179,7 +179,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
             CARRY_OBJECT_CONTROLLER_DEBUG_TEXT_POS.y + DEBUG_TEXT_ONE_LINE + DEBUG_TEXT_SPACE,
             500, 40);
 
-        public static string ROBOT_NAME = "Rei";
+        public static string ROBOT_NAME = "Misen";
         public static COMMUNICATION_MODE ROBOT_COMMUNICATION_MODE = COMMUNICATION_MODE.ROS;
 
         public static SYNC_MODE ROBOT_SYNC_MODE = SYNC_MODE.ASYNC;

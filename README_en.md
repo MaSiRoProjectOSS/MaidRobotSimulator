@@ -43,13 +43,13 @@ The C# script designed in this simulator is explained in the following document.
 
 ## Maid Robot Running in the Simulator
 
-This simulator includes one maid robot. Her name is "Rei". The maid robot is created in Vroid Studio and output in VRM1.0 file format.
+This simulator includes one maid robot. The maid robot is created in Vroid Studio and output in VRM1.0 file format.
 
 The model is also available at the following link (Vroid Hub).
 
 <https://hub.vroid.com/characters/1254861402411331672/models/5998322075644097762>
 
-## Terms of Use for the Maid Robot "Rei"
+## Terms of Use for the Maid Robot avatar
 
 This avatar is available for all users.
 
