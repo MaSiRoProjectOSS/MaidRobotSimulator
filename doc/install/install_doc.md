@@ -72,7 +72,7 @@ Unity Asset Store から、以下のアセットをインストールします�
 
 アセットのインストール方法については、以下リンク先をご参照ください。
 
-<https://docs.unity3d.com/2021.2/Documentation/Manual/AssetPackagesPurchase.html>
+<https://docs.unity3d.com/2021.3/Documentation/Manual/AssetPackagesPurchase.html>
 
 ### 2.5. ロボットを再配置する
 
@@ -80,21 +80,21 @@ Unity Asset Store から、以下のアセットをインストールします�
 
 #### 2.5.1. 「.vrm」ファイルをコピーする
 
-本リポジトリの「MaidRobotCafe」「Assets」「Robot」フォルダを開きます。「Rei_VRM_1.vrm」ファイルを別のフォルダへコピーします。
+本リポジトリの「MaidRobotCafe」「Assets」「Robot」フォルダを開きます。「Misen_VRM_1.vrm」ファイルを別のフォルダへコピーします。
 
-もしくは、以下のVroid Hubからモデルファイルをダウンロードし、ファイル名を「Rei_VRM_1.vrm」に変更します。
+もしくは、以下のVroid Hubからモデルファイルをダウンロードし、ファイル名を「Misen_VRM_1.vrm」に変更します。
 
 <https://hub.vroid.com/characters/1254861402411331672/models/5998322075644097762>
 
 #### 2.5.2. 「.vrm」ファイルを削除する
 
-Unity の編集画面で、「Project」ペインの「Assets」「Robot」フォルダを選択します。「Rei_VRM_1」をクリックし、Deleteキーを入力して削除します。
+Unity の編集画面で、「Project」ペインの「Assets」「Robot」フォルダを選択します。「Misen_VRM_1」をクリックし、Deleteキーを入力して削除します。
 
 ![vrmを削除](./delete_vrm.png)
 
 #### 2.5.3. 「.vrm」ファイルをドラッグアンドドロップする
 
-節（2.5.1.）でコピーした「Rei_VRM_1.vrm」ファイルを、Unity 編集画面の「Robot」フォルダへドラッグアンドドロップします。
+節（2.5.1.）でコピーした「Misen_VRM_1.vrm」ファイルを、Unity 編集画面の「Robot」フォルダへドラッグアンドドロップします。
 
 ![ドラッグアンドドロップ](./drag_and_drop_vrm.png)
 

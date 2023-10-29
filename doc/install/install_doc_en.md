@@ -72,7 +72,7 @@ Install the following assets from the Unity Asset Store.
 
 For instructions on how to install assets, please refer to the link below.
 
-<https://docs.unity3d.com/2021.2/Documentation/Manual/AssetPackagesPurchase.html>
+<https://docs.unity3d.com/2021.3/Documentation/Manual/AssetPackagesPurchase.html>
 
 ### 2.5. Reposition the Robot
 
@@ -80,21 +80,21 @@ The first time, the .vrm file may not be loaded correctly, so follow the steps b
 
 #### 2.5.1. Copy the ".vrm" File
 
-Open the "MaidRobotCafe", "Assets", "Robot" folder of this repository. Copy the "Rei_VRM_1.vrm" file to another folder.
+Open the "MaidRobotCafe", "Assets", "Robot" folder of this repository. Copy the "Misen_VRM_1.vrm" file to another folder.
 
-Alternatively, download the model file from the Vroid Hub below and change the file name to "Rei_VRM_1.vrm".
+Alternatively, download the model file from the Vroid Hub below and change the file name to "Misen_VRM_1.vrm".
 
 <https://hub.vroid.com/characters/1254861402411331672/models/5998322075644097762>
 
 #### 2.5.2. Delete the ".vrm" File
 
-In the Unity editing screen, select the "Assets", "Robot" folder in the "Project" pane. Click on "Rei_VRM_1" and press the Delete key to delete it.
+In the Unity editing screen, select the "Assets", "Robot" folder in the "Project" pane. Click on "Misen_VRM_1" and press the Delete key to delete it.
 
 ![Delete vrm](./delete_vrm.png)
 
 #### 2.5.3. Drag and Drop the ".vrm" File
 
-Drag and drop the "Rei_VRM_1.vrm" file you copied in section (2.5.1.) into the "Robot" folder in the Unity editing screen.
+Drag and drop the "Misen_VRM_1.vrm" file you copied in section (2.5.1.) into the "Robot" folder in the Unity editing screen.
 
 ![Drag and Drop](./drag_and_drop_vrm.png)
 
