@@ -4,7 +4,7 @@
 
 | アプリ名 | サポートバージョン |
 | -- | -- |
-| Unity 3D | [2021.3.22f1](https://unity.com/releases/editor/whats-new/2021.3.22) |
+| Unity 3D | [2022.3.11f1](https://unity.com/releases/editor/whats-new/2022.3.11) |
 | Vroid Studio | 1.21.0 |
 | ROS2 | Humble, Galactic, Foxy |
 | ROS-TCP-Endpoint | 0.7.0 |
@@ -16,7 +16,6 @@
 | Big Furniture Pack | 1.3 |
 | Dish&Tray | 1.0 |
 | White Porcelain Dish Set Demo | 1.0 |
-| Starter Assets - Third Person Character Controller | 1.1.5 |
 | ROS TCP Connector | 0.7.0-preview |
 | UniVRM | 0.113.0 |
 

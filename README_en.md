@@ -2,7 +2,7 @@
 
 This simulator is for testing the control algorithms and software of a maid robot.
 
-## Features of ver1
+## Features of ver2
 
 The things you can do with Maid Robot Simulator ver1 are as follows.
 
@@ -10,8 +10,12 @@ The things you can do with Maid Robot Simulator ver1 are as follows.
 - Simulate cafe serving tasks (carrying cups).
 - Change the position and posture with external input.
 - Output the current position and posture information with external output.
+- Change the position of the maid robot's hands with external input (hand-holding mode).
+- Works with MaidRobotSystem,
+  - Recognizes people and controls the face direction and eye line.
+  - Controls the speed based on the hand position (hand-tied movement).
 
-For external input and output, you can use UDP, ROS, and ROS2.
+For external input and output, you can use ROS, and ROS2.
 
 ## Applications to Use
 
@@ -21,7 +25,7 @@ Please check the following for the applications to use.
 
 [Notes]
 
-- Vroid Studio is necessary if you are creating your own robot. It is not necessary if you are using the default robot "Rei".
+- Vroid Studio is necessary if you are creating your own robot. It is not necessary if you are using the default robot.
 
 ## Installation Method
 
@@ -40,6 +44,12 @@ Please refer to the following for how to use.
 The C# script designed in this simulator is explained in the following document.
 
 [Explanation About the Script](./doc/about_script/explain_script_en.md)
+
+## About Docker
+
+The MaidRobotSystem environment that works with the simulator is available in Docker. Please refer to the following for a list of Docker commands to use it.
+
+[About installation and Docker related scripts](./MaidRobotSystem/scripts_description_en.md)
 
 ## Maid Robot Running in the Simulator
 

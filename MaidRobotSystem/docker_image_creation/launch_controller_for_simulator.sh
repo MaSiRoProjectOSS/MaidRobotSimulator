@@ -1,0 +1,1 @@
+/opt/MaidRobotSystem/src/planetary_module/ros/mrs.sh --mrs_config=/opt/MaidRobotSystem/src/planetary_module/ros/vs_tasks/simulator/../../config/simulator.json aros2 launch maid_robot_system simulator.launch.py

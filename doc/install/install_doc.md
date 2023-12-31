@@ -29,7 +29,9 @@
 
 Unity のインストール方法についての詳細はリンク先をご確認ください。
 
-<https://docs.unity3d.com/2021.3/Documentation/Manual/GettingStartedInstallingUnity.html>
+<https://docs.unity3d.com/2022.3/Documentation/Manual/GettingStartedInstallingUnity.html>
+
+以降では、Unity Hub をインストールしてから Unity Editor をインストールする手順を紹介しています。
 
 ### 2.1. Unity Hub をインストール
 
@@ -38,6 +40,8 @@ Unity のインストール方法についての詳細はリンク先をご確�
 <https://unity.com/download>
 
 ### 2.2. Unity Editor をインストール
+
+Unity Editorは、「MaidRobotCafe」プロジェクトを読み込む時に、その「MaidRobotCafe」のバージョンに合ったものをインストールできます。したがって、事前にインストールしておく必要はありません。
 
 Unity Hub を起動し、「Installs」から「Install Editor」クリックしてインストールします。推奨バージョンについては、以下のリンク先をご確認ください。
 
@@ -50,6 +54,8 @@ Unity Hub を起動し、「Installs」から「Install Editor」クリックし
 <https://github.com/MaSiRoProjectOSS/MaidRobotSimulator/releases>
 
 解凍後、Unity Hub から、解凍したフォルダの中にある「MaidRobotCafe」フォルダを指定して開きます。
+
+この時、一致するバージョンのUnity Editorがインストールされていない場合は、インストールするためのウィンドウが開きます。
 
 最初は Unity 実行用のファイルを展開する必要があるため、編集画面が現れるまでに時間がかかる場合があります。
 
@@ -67,12 +73,10 @@ Unity Asset Store から、以下のアセットをインストールします�
   - <https://assetstore.unity.com/packages/3d/props/interior/dish-tray-5333>
 - White Porcelain Dish Set Demo
   - <https://assetstore.unity.com/packages/3d/white-porcelain-dish-set-demo-82858>
-- Starter Assets - Third Person Character Controller | URP
-  - <https://assetstore.unity.com/packages/essentials/starter-assets-third-person-character-controller-urp-196526>
 
 アセットのインストール方法については、以下リンク先をご参照ください。
 
-<https://docs.unity3d.com/2021.3/Documentation/Manual/AssetPackagesPurchase.html>
+<https://docs.unity3d.com/2022.3/Documentation/Manual/AssetPackagesPurchase.html>
 
 ### 2.5. ロボットを再配置する
 
@@ -122,7 +126,7 @@ ROS2を用いる場合は、クローンした「ROS-TCP-Endpoint」のブラン
 
 以下のコマンドで、クローンとブランチの切替を一度に行うことができます。
 
-> git clone -b main-ros2 https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git
+> git clone -b main-ros2 <https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git>
 
 次に、「ROS-TCP-Endpoint」をビルドします。ROS2によるビルドは以下のコマンドで行うことができます。
 

@@ -29,7 +29,7 @@ The avatar of the maid robot is saved in the .vrm file format and imported from 
 
 For details on how to install Unity, please check the link.
 
-<https://docs.unity3d.com/2021.3/Documentation/Manual/GettingStartedInstallingUnity.html>
+<https://docs.unity3d.com/2022.3/Documentation/Manual/GettingStartedInstallingUnity.html>
 
 ### 2.1. Install Unity Hub
 
@@ -38,6 +38,8 @@ First, install Unity Hub. You can download it from the link below.
 <https://unity.com/download>
 
 ### 2.2. Install Unity Editor
+
+The Unity Editor can be installed with the correct version of "MaidRobotCafe" when loading a "MaidRobotCafe" project. Therefore, it is not necessary to install it beforehand.
 
 Launch Unity Hub, go to "Installs", click on "Install Editor" and install it. For the recommended version, please check the link below.
 
@@ -50,6 +52,8 @@ The files in the "MaidRobotCafe" folder of this repository are the complete Unit
 <https://github.com/MaSiRoProjectOSS/MaidRobotSimulator/releases>
 
 After unzipping, open the "MaidRobotCafe" folder inside the unzipped folder from Unity Hub.
+
+If the matching version of Unity Editor is not installed at this time, a window will open to install it.
 
 Initially, it may take some time for the editing screen to appear because you need to deploy the files for running Unity.
 
@@ -67,12 +71,10 @@ Install the following assets from the Unity Asset Store.
   - <https://assetstore.unity.com/packages/3d/props/interior/dish-tray-5333>
 - White Porcelain Dish Set Demo
   - <https://assetstore.unity.com/packages/3d/white-porcelain-dish-set-demo-82858>
-- Starter Assets - Third Person Character Controller | URP
-  - <https://assetstore.unity.com/packages/essentials/starter-assets-third-person-character-controller-urp-196526>
 
 For instructions on how to install assets, please refer to the link below.
 
-<https://docs.unity3d.com/2021.3/Documentation/Manual/AssetPackagesPurchase.html>
+<https://docs.unity3d.com/2022.3/Documentation/Manual/AssetPackagesPurchase.html>
 
 ### 2.5. Reposition the Robot
 
