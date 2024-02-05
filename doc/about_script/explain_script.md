@@ -21,9 +21,13 @@
     - 軌道の補間機能をまとめています。
 
 - Input
+  - InputManager
+    - PCからの入力処理を行います。
+    - ゲームオブジェクト「KeyboardInput」にアタッチされています。
   - KeyboardReceiver
     - キーボードの入力処理を行います。
-    - ゲームオブジェクト「KeyboardInput」にアタッチされています。
+  - GamepadReceiver
+    - ゲームパッドの入力処理を行います。
 
 - CarryObject
   - CarryObjectController
@@ -34,6 +38,10 @@
   - EnvironmentController
     - カメラ操作など、ゲーム環境の制御を行います。
     - ゲームオブジェクト「Environment」にアタッチされています。
+
+- Player
+  - PlayerController
+    - プレイヤーを制御します。
 
 - Robot
   - RobotController
@@ -51,6 +59,11 @@
     - WaistDownUnitを制御します。
   - InverseKinematicsManager
     - 逆運動学アルゴリズムに関する処理をまとめています。
+  - SimpleStepInverseKinematics
+    - 自作の逆運動学アルゴリズムです。
+    - ただし、まだ未完成です。
+  - RigidBodyTree
+    - 剛体とジョイントのモデルを表現しています。
 
 - Communication
   - CommunicationReceiver

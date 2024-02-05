@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file ArmUnitController.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Control wasit down unit.
@@ -20,7 +20,10 @@ namespace MaidRobotSimulator.MaidRobotCafe
 
         private WaistDownUnitController _WaistDownUnitController;
 
-        private KeyboardReceiver _KeyboardReceiver;            /*!< Keyboard Receiver object */
+        private EnvironmentController _EnvironmentController;
+        private PlayerController _PlayerController;
+
+        private InputManager _InputManager;
 
         private SystemStructure.ST_HUMANOID_ARM_ROTATION _right_arm_rotation =
             new SystemStructure.ST_HUMANOID_ARM_ROTATION(
@@ -86,11 +89,18 @@ namespace MaidRobotSimulator.MaidRobotCafe
         public ArmUnitController(WaistDownUnitController waist_down_unit_controller)
         {
             this._WaistDownUnitController = waist_down_unit_controller;
+            this._InputManager = GameObject.Find(CommonParameter.INPUT_MANAGER_NAME).GetComponent<InputManager>();
+
             this._Robot_GameObject = GameObject.Find(CommonParameter.ROBOT_NAME);
             this._robot_controller = this._Robot_GameObject.GetComponent<RobotController>();
 
-            GameObject KeyboardInput_GameObject = GameObject.Find(CommonParameter.KEYBOARD_INPUT_NAME);
-            this._KeyboardReceiver = KeyboardInput_GameObject.GetComponent<KeyboardReceiver>();
+            this._EnvironmentController = GameObject.Find(CommonParameter.ENVIRONMENT_NAME).GetComponent<EnvironmentController>();
+
+            GameObject player_GameObject = GameObject.Find(this._EnvironmentController.get_player_name());
+            if (null != player_GameObject)
+            {
+                this._PlayerController = player_GameObject.GetComponent<PlayerController>();
+            }
 
             this.initialize_arm_and_hand_angles();
 
@@ -127,6 +137,16 @@ namespace MaidRobotSimulator.MaidRobotCafe
             return this._left_upper_arm_absolute_position;
         }
 
+        public Vector3 get_right_upper_arm_relative_position()
+        {
+            return this._right_upper_arm_relative_position;
+        }
+
+        public Vector3 get_left_upper_arm_relative_position()
+        {
+            return this._left_upper_arm_relative_position;
+        }
+
         public Quaternion get_upper_arm_rotation_for_locomotion()
         {
             Quaternion upper_arm_rotation = Quaternion.identity;
@@ -157,6 +177,26 @@ namespace MaidRobotSimulator.MaidRobotCafe
         {
             return this._WaistDownUnitController.get_left_shoulder_rotation()
                 * this._left_arm_rotation.upper_arm;
+        }
+
+        public Quaternion get_right_upper_arm_relative_rotation()
+        {
+            return this._right_arm_rotation.upper_arm;
+        }
+
+        public Quaternion get_left_upper_arm_relative_rotation()
+        {
+            return this._left_arm_rotation.upper_arm;
+        }
+
+        public Quaternion get_right_lower_arm_relative_rotation()
+        {
+            return this._right_arm_rotation.lower_arm;
+        }
+
+        public Quaternion get_left_lower_arm_relative_rotation()
+        {
+            return this._left_arm_rotation.lower_arm;
         }
 
         public SystemStructure.ROBOT_HAND_HOLDING_SIDE get_hand_holding_side()
@@ -194,6 +234,26 @@ namespace MaidRobotSimulator.MaidRobotCafe
                 hand_position = this.get_left_hand_relative_position();
                 hand_position.x -= this._left_upper_arm_relative_position.x;
                 hand_position.y -= this._left_upper_arm_relative_position.y;
+            }
+            else
+            {
+                throw new Exception("Abnormal robot hand holding side");
+            }
+
+            return hand_position;
+        }
+
+        public Vector3 get_holding_hand_absolute_position()
+        {
+            Vector3 hand_position = Vector3.zero;
+
+            if (SystemStructure.ROBOT_HAND_HOLDING_SIDE.RIGHT == this._hand_holding_side)
+            {
+                hand_position = this.get_right_hand_absolute_position();
+            }
+            else if (SystemStructure.ROBOT_HAND_HOLDING_SIDE.LEFT == this._hand_holding_side)
+            {
+                hand_position = this.get_left_hand_absolute_position();
             }
             else
             {
@@ -502,7 +562,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
          *********************************************************/
         private void _get_hand_direction()
         {
-            this._KeyboardReceiver.get_hand_direction_input(ref this._hand_direction_input);
+            this._InputManager.get_hand_direction_input(ref this._hand_direction_input);
         }
 
         private void _update_hand_position_and_rotation(Humanoid humanoid_component, float delta_time)
@@ -553,6 +613,12 @@ namespace MaidRobotSimulator.MaidRobotCafe
             /* set next position */
             next_hand_position += 
                 this._WaistDownUnitController.get_current_rotation() * delta_position;
+
+            /* add player hand position */
+            if (null != this._PlayerController)
+            {
+                next_hand_position += this._PlayerController.get_hand_holding_position();
+            }
 
             /* update current position */
             if (SystemStructure.ROBOT_HAND_HOLDING_SIDE.RIGHT == this._hand_holding_side)

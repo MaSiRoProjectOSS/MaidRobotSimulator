@@ -27,6 +27,10 @@ How to move the hand position in HAND_HOLDING mode
 | Shift + Arrow keys up | Move Z-axis positive direction from the robot's view |
 | Shift + Arrow key down | Move Z-axis negative direction from robot's view |
 
+## About Gamepad Operations
+
+![how_to_use_gamepad_image](../../MaidRobotCafe/Assets/Documents/Image/how_to_use_gamepad.png)
+
 ## About Movement
 
 The movement speed when a key is pressed is 1[m/s] for forward and backward movement, and 1[rad/s] for rotation.
@@ -52,12 +56,22 @@ The places where you can put the cup are the initial position of the flasket and
 
 ## About the robot's modes
 
-During execution, the robot's mode can be switched by pressing the T key on the keyboard. At startup, the robot is in CATERING mode.
+During execution, the robot's mode can be switched by pressing the T key on the keyboard.
 
 - CATERING mode
   - This mode reproduces the operation of carrying drinks and other items to customers in a cafe.
 - HAND_HOLDING mode
   - This mode reproduces the movement of the robot by hand holding.
+
+## About player's modes
+
+During execution, the player can switch between modes by pressing the X button on the gamepad.
+
+- FREE Mode
+  - The player can move freely.
+- HAND_HOLDING mode
+  - The player is free to move, but still holding hands with the robot. To switch to this mode, the robot must be HAND_HOLDING and the player is within 1.5 meters from the robot.
+  - If the robot is more than 1.5 meters away from the robot, it will automatically transition to FREE mode.
 
 ## About camera mode
 
@@ -68,11 +82,21 @@ The camera mode can be switched by pressing the F1 key on the keyboard during ex
 - NEAR mode
   - This mode allows you to view the robot in detail.
 
+## About the camera mode when the player is in control
+
+During execution, when a player is present, the screen display can be switched using the Select button on the gamepad.
+
+- NORMAL mode
+  - This mode shows the player's viewpoint on the left and the entire area on the right.
+- FOCUS_TO_PLAYER_VIEW mode
+  - This mode shows only the player's viewpoint.
+
 ## ROS Communication
 
 If you are going to communicate with ROS, you need to start the ROS TCP Endpoint in advance. The Maid Robot System uses ROS2.
 
 The ROS TCP Endpoint requires installation work in advance. For details of the work, please refer to the installation method documentation.
+
 [Installation Method](../install/install_doc_en.md)
 
 ### Starting the ROS TCP Endpoint

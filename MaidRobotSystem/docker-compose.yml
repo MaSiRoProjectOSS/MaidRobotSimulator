@@ -1,0 +1,15 @@
+version: '3'
+services:
+
+  controller:
+    image: masiroproject/maid_robot_system_for_simulator:v2.0
+    container_name: maid_robot_system_controller
+    ports:
+      - 3000:3000
+    command: /bin/bash -c "./launch_controller_for_simulator.sh"
+
+  ros_tcp_endpoint:
+    image: masiroproject/maid_robot_system_for_simulator:v2.0
+    container_name: maid_robot_system_endpoint
+    network_mode: host
+    command: /bin/bash -c "sleep 5 ; ./start_ros_tcp_endpoint.sh"

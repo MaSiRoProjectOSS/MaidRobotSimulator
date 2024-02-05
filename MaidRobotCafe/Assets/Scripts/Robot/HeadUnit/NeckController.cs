@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file NeckController.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Control neck rotation.
@@ -76,9 +76,11 @@ namespace MaidRobotSimulator.MaidRobotCafe
             this._random_look_manager =
                 new TrajectoryInterpolationManager(CommonParameter.NECK_RANDOM_LOOK_PERIOD);
 
+            float[] neck_input_angle = new float[this._neck_input_angle.get_length()];
+            CommonTransform.euler_angle_to_array(this._neck_input_angle, ref neck_input_angle);
             this._output_neck_face_track_angle_average_manager =
                 new CommonRateManager<float>(CommonParameter.NECK_FACE_TRACK_AVERAGE_BUFFER_LENGTH,
-                this._euler_angle_to_array(this._neck_input_angle));
+                neck_input_angle);
         }
 
         /*********************************************************
@@ -88,6 +90,8 @@ namespace MaidRobotSimulator.MaidRobotCafe
         {
             bool result = true;
             this._neck_calculate_manager.update_elapsed_time(delta_time);
+
+            this._neck_current_angle = this._output_neck_face_track_angle_filter;
 
             this._resident(delta_time);
 
@@ -124,7 +128,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
                                     Mathf.InverseLerp(0.0f, CommonParameter.NECK_LIMIT_YAW_MAX, Mathf.Abs(this._neck_current_angle.yaw)))
                                 / CommonParameter.QUARTER_CIRCLE_DEG;
 
-                        this._output_neck_face_track_angle.roll = this._neck_current_angle.roll + calc_roll;
+                        this._output_neck_face_track_angle.roll = calc_roll - this._neck_current_angle.roll;
                     }
                 }
             }
@@ -187,11 +191,14 @@ namespace MaidRobotSimulator.MaidRobotCafe
         public SystemStructure.ST_EULER_ANGLE get_output_neck_face_track_angle()
         {
             /* These moving average for neck angles are to simulate the delay of servo motor. */
+            float[] face_track_angle = new float[this._output_neck_face_track_angle.get_length()];
+            CommonTransform.euler_angle_to_array(this._output_neck_face_track_angle, ref face_track_angle);
             this._output_neck_face_track_angle_average_manager.set_moving_average_value(
-                this._euler_angle_to_array(this._output_neck_face_track_angle));
+                face_track_angle);
 
-            this._output_neck_face_track_angle_filter = this._array_to_euler_angle(
-                this._output_neck_face_track_angle_average_manager.get_moving_average_values());
+            CommonTransform.array_to_euler_angle(
+                this._output_neck_face_track_angle_average_manager.get_moving_average_values(),
+                ref this._output_neck_face_track_angle_filter);
 
             this._output_neck_face_track_angle_filter.roll =
                 Mathf.Clamp(
@@ -438,28 +445,6 @@ namespace MaidRobotSimulator.MaidRobotCafe
                 this._neck_pose_command = SystemStructure.NECK_POSE_COMMAND.STAY;
                 this._pose_sequence = SystemStructure.POSE_SEQUENCE.FIRST;
             }
-        }
-
-        private float[] _euler_angle_to_array(SystemStructure.ST_EULER_ANGLE euler_angle)
-        {
-            float[] array = new float[3];
-
-            array[0] = euler_angle.roll;
-            array[1] = euler_angle.pitch;
-            array[2] = euler_angle.yaw;
-
-            return array;
-        }
-
-        private SystemStructure.ST_EULER_ANGLE _array_to_euler_angle(float[] array)
-        {
-            SystemStructure.ST_EULER_ANGLE euler_angle = new SystemStructure.ST_EULER_ANGLE();
-
-            euler_angle.roll = array[0];
-            euler_angle.pitch = array[1];
-            euler_angle.yaw = array[2];
-
-            return euler_angle;
         }
 
         /*********************************************************

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file HeadUnitController.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Control head unit.
@@ -259,7 +259,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
             Quaternion neck_rotation_reference,
             MessageStructure.ST_MRS_EYE eye_reference)
         {
-            /* Head */
+            /* Neck angle */
             this._neck_angle_reference = this._calculate_neck_angle(neck_rotation_reference);
 
             this._neck_controller.set_neck_input_angle(this._neck_angle_reference);
@@ -270,7 +270,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
 
             this._head_rotation = CommonParameter.HEAD_ROTATION_INIT * neck_rotation;
 
-            /* Eye */
+            /* Eye angle */
             this._eye_controller.set_eye_rotation_input(eye_reference);
             this._eye_controller.calculate();
             this._eye_controller.get_output_eye_rotation(

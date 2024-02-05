@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file CommonImageProcessor.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Common image processing for Maid Robot Simulator.
@@ -9,12 +9,10 @@
 
 #define USE_PARALLEL_JOB
 
-using RosMessageTypes.Sensor;
 using System;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace MaidRobotSimulator.MaidRobotCafe
 {

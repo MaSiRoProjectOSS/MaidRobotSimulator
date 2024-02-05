@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file RobotController.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Control Robot.
@@ -22,10 +22,13 @@ public class RobotController : MonoBehaviour
     /*********************************************************
      * Private variables
      *********************************************************/
-    GameObject _Robot_GameObject;
-    GameObject _Tray_GameObject;
+    private GameObject _Robot_GameObject;
+    private GameObject _Tray_GameObject;
 
-    private KeyboardReceiver _KeyboardReceiver;            /*!< Keyboard Receiver object */
+    private EnvironmentController _EnvironmentController;
+
+    private InputManager _InputManager;                    /*!< Input Manager object */
+
     private CarryObjectController _CarryObjectController;  /*!< Carry Object Controller object */
     private Animator _animator;                            /*!< Animator object */
     private Humanoid _humanoid_component;
@@ -42,11 +45,11 @@ public class RobotController : MonoBehaviour
     private CommonStateMachine<SystemStructure.ROBOT_MODE> _robot_mode_state_machine;
     private CommonStateMachine<SystemStructure.ROBOT_CARRYING_STATE> _carrying_state_state_machine; /*!< carrying state */
 
-    SystemStructure.ST_8_DIRECTION_MOVE _robot_direction_input = new SystemStructure.ST_8_DIRECTION_MOVE(
+    private SystemStructure.ST_8_DIRECTION_MOVE _robot_direction_input =
+        new SystemStructure.ST_8_DIRECTION_MOVE(
             false, false, false, false, false, false, false, false); /*!< direction input */
 
-    private Vector3 _IK_robot_hand_position_robot_axis = Vector3.zero;
-    private Vector3 _IK_robot_hand_position_unity_axis = Vector3.zero;
+    private Vector3 _IK_robot_hand_relative_position_robot_axis = Vector3.zero;
 
     private bool _collide_flag = false;       /*!< collide flag */
     private string _collide_object_name = ""; /*!< names of collided object */
@@ -71,14 +74,34 @@ public class RobotController : MonoBehaviour
         return this._InverseKinematicsManager;
     }
 
+    public Vector3 get_robot_base_position()
+    {
+        return this._WaistDownUnitController.get_current_position();
+    }
+
     public Quaternion get_robot_base_rotation()
     {
         return this._WaistDownUnitController.get_current_rotation();
     }
 
+    public Vector3 get_holding_hand_absolute_position()
+    {
+        return this._ArmUnitController.get_holding_hand_absolute_position();
+    }
+
     public string get_log_text()
     {
         return this._logText;
+    }
+
+    public Vector3 get_robot_hand_reference_absolute_position()
+    {
+        Vector3 absolute_position = Vector3.zero;
+
+        absolute_position = this._WaistDownUnitController.get_current_position()
+            + this._WaistDownUnitController.get_current_rotation() * this._IK_robot_hand_relative_position_robot_axis;
+
+        return absolute_position;
     }
 
     /*********************************************************
@@ -92,16 +115,16 @@ public class RobotController : MonoBehaviour
     /* Start is called before the first frame update */
     void Start()
     {
+        this._EnvironmentController = GameObject.Find(CommonParameter.ENVIRONMENT_NAME).GetComponent<EnvironmentController>();
+
+        this._InputManager = GameObject.Find(CommonParameter.INPUT_MANAGER_NAME).GetComponent<InputManager>();
+
+        if (SystemStructure.SCENE_MODE.EVENT == this._EnvironmentController.get_current_scene_mode())
+        {
+            this._robot_mode_state_machine.update_mode(SystemStructure.ROBOT_MODE.HAND_HOLDING);
+        }
+
         this._Robot_GameObject = GameObject.Find(CommonParameter.ROBOT_NAME);
-
-        Transform Tray_Transform = this._Robot_GameObject.transform.Find(CommonParameter.TRAY_NAME);
-        this._Tray_GameObject = Tray_Transform.gameObject;
-
-        GameObject KeyboardInput_GameObject = GameObject.Find(CommonParameter.KEYBOARD_INPUT_NAME);
-        this._KeyboardReceiver = KeyboardInput_GameObject.GetComponent<KeyboardReceiver>();
-
-        GameObject CarryObjectController_GameObject = GameObject.Find(CommonParameter.CARRY_OBJECTS_NAME);
-        this._CarryObjectController = CarryObjectController_GameObject.GetComponent<CarryObjectController>();
 
         this._animator = this._Robot_GameObject.GetComponent<Animator>();
 
@@ -135,8 +158,16 @@ public class RobotController : MonoBehaviour
 
         this._WaistDownUnitController.draw_hip_rotation(ref this._Robot_GameObject, this.transform.rotation);
 
-        /* Adjust Tray position */
-        this._adjust_tray_position(ref Tray_Transform);
+        if (SystemStructure.SCENE_MODE.EVENT != this._EnvironmentController.get_current_scene_mode())
+        {
+            GameObject CarryObjectController_GameObject = GameObject.Find(CommonParameter.CARRY_OBJECTS_NAME);
+            this._CarryObjectController = CarryObjectController_GameObject.GetComponent<CarryObjectController>();
+
+            Transform Tray_Transform = this._Robot_GameObject.transform.Find(CommonParameter.TRAY_NAME);
+            this._Tray_GameObject = Tray_Transform.gameObject;
+
+            this._adjust_tray_position(ref Tray_Transform);
+        }
 
         /* Coroutine */
         StartCoroutine(this._HeadUnitController.excite_blink_event_randomly());
@@ -147,7 +178,7 @@ public class RobotController : MonoBehaviour
         if (SystemStructure.ROBOT_MODE.HAND_HOLDING == this._robot_mode_state_machine.get_mode())
         {
             this._InverseKinematicsManager.calculate_IK_and_draw_arm_rotation(
-                this._IK_robot_hand_position_unity_axis, this._WaistDownUnitController);
+                this._IK_robot_hand_relative_position_robot_axis, this._WaistDownUnitController);
         }
         else
         {
@@ -276,9 +307,9 @@ public class RobotController : MonoBehaviour
         Vector3 velocity_unity_axis = CommonParameter.TRANSLATIONAL_VELOCITY_INIT;
         Vector3 angular_velocity_unity_axis = CommonParameter.ANGULAR_VELOCITY_INIT;
 
-        this._KeyboardReceiver.get_robot_direction_input(ref this._robot_direction_input);
+        this._InputManager.get_robot_direction_input(ref this._robot_direction_input);
 
-        SystemStructure.INPUT_MODE current_input_mode = this._KeyboardReceiver.get_current_input_mode();
+        SystemStructure.INPUT_MODE current_input_mode = this._InputManager.get_current_input_mode();
         switch (current_input_mode)
         {
             case SystemStructure.INPUT_MODE.COMMUNICATION:
@@ -326,11 +357,8 @@ public class RobotController : MonoBehaviour
 
     private void _update_hand_position()
     {
-        this._IK_robot_hand_position_robot_axis =
-            this._InverseKinematicsManager.get_hand_position_for_IK();
-        
-        CommonTransform.transform_position_from_robot_to_unity(
-                this._IK_robot_hand_position_robot_axis, ref this._IK_robot_hand_position_unity_axis);        
+        this._IK_robot_hand_relative_position_robot_axis =
+            this._InverseKinematicsManager.get_hand_position_for_IK();       
     }
 
     private void _pick_and_place_objects()
@@ -339,14 +367,14 @@ public class RobotController : MonoBehaviour
         {
             SystemStructure.ROBOT_CARRYING_STATE next_state = this._carrying_state_state_machine.get_mode();
 
-            if (this._KeyboardReceiver.check_place_on_robot_tray_flag())
+            if (this._InputManager.check_place_on_robot_tray_flag())
             {
                 if (this._CarryObjectController.place_on_robot_tray())
                 {
                     next_state = SystemStructure.ROBOT_CARRYING_STATE.CARRY_TEACUP;
                 }
             }
-            if (this._KeyboardReceiver.check_place_on_nearest_table_flag())
+            if (this._InputManager.check_place_on_nearest_table_flag())
             {
                 if (this._CarryObjectController.place_on_nearest_table())
                 {
@@ -360,9 +388,16 @@ public class RobotController : MonoBehaviour
 
     private void _check_and_switch_robot_mode()
     {
-        this._robot_mode_state_machine.successive_switch_mode_and_update_elapsed_time(
-            this._KeyboardReceiver.check_robot_mode_switch_flag(),
-            CommonParameter.ROBOT_MODE_WAIT_TIME, Time.deltaTime);
+        if(SystemStructure.SCENE_MODE.EVENT == this._EnvironmentController.get_current_scene_mode())
+        {
+            this._robot_mode_state_machine.update_mode(SystemStructure.ROBOT_MODE.HAND_HOLDING);
+        }
+        else
+        {
+            this._robot_mode_state_machine.successive_switch_mode_and_update_elapsed_time(
+                this._InputManager.check_robot_mode_switch_flag(),
+                CommonParameter.ROBOT_MODE_WAIT_TIME, Time.deltaTime);
+        }
     }
 
     private void _update_arm_position(float delta_time)
@@ -375,6 +410,7 @@ public class RobotController : MonoBehaviour
         {
             this._ArmUnitController.initialize_arm_and_hand_angles();
             this._ArmUnitController.initialize_arm_position_for_hand_holding(this._WaistDownUnitController);
+            this._InverseKinematicsManager.initialize_arm_rotation();
         }
         else if (this._robot_mode_state_machine.is_transition(
                 SystemStructure.ROBOT_MODE.HAND_HOLDING, SystemStructure.ROBOT_MODE.CATERING))
@@ -407,16 +443,19 @@ public class RobotController : MonoBehaviour
 
     private void _update_tray_appearance()
     {
-        if (this._robot_mode_state_machine.is_transition(
+        if (SystemStructure.SCENE_MODE.EVENT != this._EnvironmentController.get_current_scene_mode())
+        {
+            if (this._robot_mode_state_machine.is_transition(
                  SystemStructure.ROBOT_MODE.CATERING, SystemStructure.ROBOT_MODE.HAND_HOLDING))
-        {
-            this._CarryObjectController.destroy_tray();
-        }
-        else if
-            (this._robot_mode_state_machine.is_transition(
-                SystemStructure.ROBOT_MODE.HAND_HOLDING, SystemStructure.ROBOT_MODE.CATERING))
-        {
-            this._CarryObjectController.generate_tray();
+            {
+                this._CarryObjectController.destroy_tray();
+            }
+            else if
+                (this._robot_mode_state_machine.is_transition(
+                    SystemStructure.ROBOT_MODE.HAND_HOLDING, SystemStructure.ROBOT_MODE.CATERING))
+            {
+                this._CarryObjectController.generate_tray();
+            }
         }
     }
 
@@ -433,18 +472,31 @@ public class RobotController : MonoBehaviour
     private void _log_for_debug()
     {
         Vector3 position = this._WaistDownUnitController.get_current_position();
-        Vector3 euler_angle = this._WaistDownUnitController.get_current_euler_angle();
+        //Vector3 euler_angle = this._WaistDownUnitController.get_current_euler_angle();
         Vector3 hand_position = this._ArmUnitController.get_hand_position_for_hand_holding();
 
-        this._logText = "RobotX: " + position.x.ToString() + Environment.NewLine
+        Quaternion head_rotation = this._HeadUnitController.get_head_rotation();
+        Vector3 head_angle = head_rotation.eulerAngles;
+
+        Vector3 upper_arm_euler_angles = this._InverseKinematicsManager.get_upper_arm_rotation_IK().eulerAngles;
+        Vector3 lower_arm_euler_angles = this._InverseKinematicsManager.get_lower_arm_rotation_IK().eulerAngles;
+
+        this._logText = "InputMode: " + this._InputManager.get_current_input_mode().ToString() + Environment.NewLine
+                      + "RobotX: " + position.x.ToString() + Environment.NewLine
                       + "RobotY: " + position.y.ToString() + Environment.NewLine
                       + "RobotZ: " + position.z.ToString() + Environment.NewLine
-                      + "RobotRoll: " + euler_angle.x.ToString() + Environment.NewLine
-                      + "RobotPitch: " + euler_angle.y.ToString() + Environment.NewLine
-                      + "RobotYaw: " + euler_angle.z.ToString() + Environment.NewLine
+                      + "HeadRoll: " + head_angle.x.ToString() + Environment.NewLine
+                      + "HeadPitch: " + head_angle.y.ToString() + Environment.NewLine
+                      + "HeadYaw: " + head_angle.z.ToString() + Environment.NewLine
                       + "HandX: " + hand_position.x.ToString() + Environment.NewLine
                       + "HandY: " + hand_position.y.ToString() + Environment.NewLine
                       + "HandZ: " + hand_position.z.ToString() + Environment.NewLine
+                      + "UpperArmRoll: " + upper_arm_euler_angles.x.ToString() + Environment.NewLine
+                      + "UpperArmPitch: " + upper_arm_euler_angles.y.ToString() + Environment.NewLine
+                      + "UpperArmYaw: " + upper_arm_euler_angles.z.ToString() + Environment.NewLine
+                      + "LowerArmRoll: " + lower_arm_euler_angles.x.ToString() + Environment.NewLine
+                      + "LowerArmPitch: " + lower_arm_euler_angles.y.ToString() + Environment.NewLine
+                      + "LowerArmYaw: " + lower_arm_euler_angles.z.ToString() + Environment.NewLine
                       + "RightEyeProcess: "
                         + this._HeadUnitController.get_right_eye_image_process_rate().ToString() + Environment.NewLine
                       + "LeftEyeProcess: "

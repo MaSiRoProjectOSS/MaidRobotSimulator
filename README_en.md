@@ -2,15 +2,17 @@
 
 This simulator is for testing the control algorithms and software of a maid robot.
 
-## Features of ver2
+## Features of ver2.1
 
-The things you can do with Maid Robot Simulator ver1 are as follows.
+The things you can do with Maid Robot Simulator ver2.1 are as follows.
 
 - Place one maid robot and operate it with a keyboard.
 - Simulate cafe serving tasks (carrying cups).
 - Change the position and posture with external input.
 - Output the current position and posture information with external output.
 - Change the position of the maid robot's hands with external input (hand-holding mode).
+- Move Player with external input.
+- Hold robot hand with Player.
 - Works with MaidRobotSystem,
   - Recognizes people and controls the face direction and eye line.
   - Controls the speed based on the hand position (hand-tied movement).

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file EyeController.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Control eye rotation.
@@ -24,12 +24,15 @@ namespace MaidRobotSimulator.MaidRobotCafe
         private CommonRateManager<float> _left_eye_rotation_average_manager;
         public EyeController()
         {
+            float[] initial_rotation = new float[CommonParameter.QUATERNION_DIMENSTION_NUM];
+            CommonTransform.quaternion_to_array(Quaternion.identity, ref initial_rotation);
+
             this._right_eye_rotation_average_manager =
                 new CommonRateManager<float>(CommonParameter.EYE_FACE_TRACK_AVERAGE_BUFFER_LENGTH,
-                this._quaternion_to_array(Quaternion.identity));
+                initial_rotation);
             this._left_eye_rotation_average_manager =
                 new CommonRateManager<float>(CommonParameter.EYE_FACE_TRACK_AVERAGE_BUFFER_LENGTH,
-                this._quaternion_to_array(Quaternion.identity));
+                initial_rotation);
         }
 
         /*********************************************************
@@ -45,6 +48,15 @@ namespace MaidRobotSimulator.MaidRobotCafe
                 * (eye_reference.left_z - CommonParameter.POSE_TO_EYE_ANGLE_CENTER_Z);
             float yaw_angle_left = CommonParameter.POSE_TO_EYE_ANGLE_YAW_FACTOR
                 * (eye_reference.left_y - CommonParameter.POSE_TO_EYE_ANGLE_CENTER_Y);
+
+            pitch_angle_right = Mathf.Clamp(pitch_angle_right,
+                CommonParameter.EYE_FACE_TRACK_PITCH_ANGLE_DEGREE_MIN, CommonParameter.EYE_FACE_TRACK_PITCH_ANGLE_DEGREE_MAX);
+            yaw_angle_right = Mathf.Clamp(yaw_angle_right,
+                CommonParameter.EYE_FACE_TRACK_YAW_ANGLE_DEGREE_MIN, CommonParameter.EYE_FACE_TRACK_YAW_ANGLE_DEGREE_MAX);
+            pitch_angle_left = Mathf.Clamp(pitch_angle_left,
+                CommonParameter.EYE_FACE_TRACK_PITCH_ANGLE_DEGREE_MIN, CommonParameter.EYE_FACE_TRACK_PITCH_ANGLE_DEGREE_MAX);
+            yaw_angle_left = Mathf.Clamp(yaw_angle_left,
+                CommonParameter.EYE_FACE_TRACK_YAW_ANGLE_DEGREE_MIN, CommonParameter.EYE_FACE_TRACK_YAW_ANGLE_DEGREE_MAX);
 
             this._right_eye_rotation_input = Quaternion.Euler(0.0f, pitch_angle_right, yaw_angle_right);
             this._left_eye_rotation_input = Quaternion.Euler(0.0f, pitch_angle_left, yaw_angle_left);
@@ -66,16 +78,18 @@ namespace MaidRobotSimulator.MaidRobotCafe
         {
             if (SystemStructure.HEAD_UNIT_MODE.FACE_TRACKING == this._head_unit_mode)
             {
-                this._right_eye_rotation_average_manager.set_moving_average_value(
-                    this._quaternion_to_array(this._right_eye_rotation_input));
-                this._left_eye_rotation_average_manager.set_moving_average_value(
-                    this._quaternion_to_array(this._left_eye_rotation_input));
+                float[] rotation_input = new float[CommonParameter.QUATERNION_DIMENSTION_NUM];
 
-                this._right_eye_rotation_output = this._array_to_quaternion(
-                    this._right_eye_rotation_average_manager.get_moving_average_values());
+                CommonTransform.quaternion_to_array(this._right_eye_rotation_input, ref rotation_input);
+                this._right_eye_rotation_average_manager.set_moving_average_value(rotation_input);
+                CommonTransform.quaternion_to_array(this._left_eye_rotation_input, ref rotation_input);
+                this._left_eye_rotation_average_manager.set_moving_average_value(rotation_input);
+
+                CommonTransform.array_to_quaternion(
+                    this._right_eye_rotation_average_manager.get_moving_average_values(), ref this._right_eye_rotation_output);
                 this._right_eye_rotation_output.Normalize();
-                this._left_eye_rotation_output = this._array_to_quaternion(
-                    this._left_eye_rotation_average_manager.get_moving_average_values());
+                CommonTransform.array_to_quaternion(
+                    this._left_eye_rotation_average_manager.get_moving_average_values(), ref this._left_eye_rotation_output);
                 this._left_eye_rotation_output.Normalize();
             }
             else if (SystemStructure.HEAD_UNIT_MODE.LOOK_FORWARD == this._head_unit_mode)
@@ -92,27 +106,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
         /*********************************************************
          * Private functions
          *********************************************************/
-        float[] _quaternion_to_array(Quaternion q)
-        {
-            float[] array = new float[4];
-            array[0] = q.x;
-            array[1] = q.y;
-            array[2] = q.z;
-            array[3] = q.w;
 
-            return array;
-        }
-
-        Quaternion _array_to_quaternion(float[] array)
-        {
-            Quaternion q = new Quaternion();
-            q.x = array[0];
-            q.y = array[1];
-            q.z = array[2];
-            q.w = array[3];
-
-            return q;
-        }
 
         /*********************************************************
         * Destructor

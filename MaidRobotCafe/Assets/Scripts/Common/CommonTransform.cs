@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file CommonTransform.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Common Transform for Maid Robot Simulator.
@@ -8,7 +8,7 @@
  */
 
 #define UNITY_DRAW_ON_ANIMATOR_IK
-//#define UNITY_DRAW_AT_LAST_UPDATE
+//#define UNITY_DRAW_AT_LATE_UPDATE
 
 using UnityEngine;
 using UniHumanoid;
@@ -21,6 +21,56 @@ namespace MaidRobotSimulator.MaidRobotCafe
         public CommonTransform()
         {
 
+        }
+
+        public static void euler_angle_to_array(
+            SystemStructure.ST_EULER_ANGLE euler_angle,
+            ref float[] array)
+        {
+            array[0] = euler_angle.roll;
+            array[1] = euler_angle.pitch;
+            array[2] = euler_angle.yaw;
+        }
+
+        public static void array_to_euler_angle(
+            float[] array,
+            ref SystemStructure.ST_EULER_ANGLE euler_angle)
+        {
+            euler_angle.roll = array[0];
+            euler_angle.pitch = array[1];
+            euler_angle.yaw = array[2];
+        }
+
+        public static void vector3_to_array(
+            Vector3 vector3, ref float[] array)
+        {
+            array[0] = vector3.x;
+            array[1] = vector3.y;
+            array[2] = vector3.z;
+        }
+
+        public static void array_to_vector3(
+            float[] array, ref Vector3 vector3)
+        {
+            vector3.x = array[0];
+            vector3.y = array[1];
+            vector3.z = array[2];
+        }
+
+        public static void quaternion_to_array(Quaternion q, ref float[] array)
+        {
+            array[0] = q.x;
+            array[1] = q.y;
+            array[2] = q.z;
+            array[3] = q.w;
+        }
+
+        public static void array_to_quaternion(float[] array, ref Quaternion q)
+        {
+            q.x = array[0];
+            q.y = array[1];
+            q.z = array[2];
+            q.w = array[3];
         }
 
         public static void update_orientation(Vector3 position_in, Quaternion rotation_in,
@@ -91,7 +141,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
 #if UNITY_DRAW_ON_ANIMATOR_IK
             Animator animator = robot_GameObject.GetComponent<Animator>();
             draw_hip_rotation(hip_rotation, robot_rotation_unity_axis, ref animator);
-#elif UNITY_DRAW_AT_LAST_UPDATE
+#elif UNITY_DRAW_AT_LATE_UPDATE
             Humanoid humanoid_component = robot_GameObject.GetComponent<Humanoid>();
             draw_hip_rotation(hip_rotation, robot_rotation_unity_axis, ref humanoid_component);
 #else
@@ -125,7 +175,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
 #if UNITY_DRAW_ON_ANIMATOR_IK
             Animator animator = robot_GameObject.GetComponent<Animator>();
             draw_robot_bone_rotation(bone_name, relative_rotation_robot, ref animator);
-#elif UNITY_DRAW_AT_LAST_UPDATE
+#elif UNITY_DRAW_AT_LATE_UPDATE
             Humanoid humanoid_component = robot_GameObject.GetComponent<Humanoid>();
             draw_robot_bone_rotation(bone_name, relative_rotation_robot, ref humanoid_component);
 #else

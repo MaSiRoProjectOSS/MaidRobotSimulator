@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file SystemStructure.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Define system data structure for defining parameters and enumurated values.
@@ -17,9 +17,22 @@ namespace MaidRobotSimulator.MaidRobotCafe
         public static int SPACE_DIMENSION_NUM = 3;
         public static int QUATERNION_DIMENSTION_NUM = 4;
 
+        public enum SCENE_MODE
+        {
+            CAFE,
+            ROOM,
+            EVENT
+        }
+
         public enum ROBOT_MODE
         {
             CATERING,
+            HAND_HOLDING
+        }
+
+        public enum PLAYER_MODE
+        {
+            FREE,
             HAND_HOLDING
         }
 
@@ -109,6 +122,18 @@ namespace MaidRobotSimulator.MaidRobotCafe
             NEAR
         }
 
+        public enum  PLAYER_CAMERA_MODE
+        {
+            NORMAL,
+            FOCUS_TO_PLAYER_VIEW
+        }
+
+        public enum START_MENU_MODE
+        {
+            CLOSE,
+            OPEN
+        }
+
         public enum SEND_MODE
         {
             WAIT,
@@ -133,11 +158,19 @@ namespace MaidRobotSimulator.MaidRobotCafe
             public float roll;
             public float pitch;
             public float yaw;
+            public int length;
             public ST_EULER_ANGLE(float roll_in, float pitch_in, float yaw_in)
             {
                 this.roll = roll_in;
                 this.pitch = pitch_in;
                 this.yaw = yaw_in;
+
+                length = 3;
+            }
+
+            public int get_length()
+            {
+                return this.length;
             }
         }
 
@@ -170,6 +203,29 @@ namespace MaidRobotSimulator.MaidRobotCafe
                 this.down = down_in;
                 this.turn_right = turn_right_in;
                 this.turn_left = turn_left_in;
+            }
+        }
+
+        public struct ST_FIRST_PERSON_DIRECTION_VELOCITY
+        {
+            public float forward_backward;
+            public float left_right;
+            public float up_down;
+            public float look_up_down;
+            public float turn_left_right;
+
+            public ST_FIRST_PERSON_DIRECTION_VELOCITY(
+                float forward_backward,
+                float left_right,
+                float up_down,
+                float look_up_down,
+                float turn_left_right)
+            {
+                this.forward_backward = forward_backward;
+                this.left_right = left_right;
+                this.up_down = up_down;
+                this.look_up_down = look_up_down;
+                this.turn_left_right = turn_left_right;
             }
         }
 

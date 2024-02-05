@@ -1,1 +1,1 @@
-docker build --no-cache -t claudemasiro/maid_robot_system_for_simulator:v2.0 .
+docker build --no-cache -t masiroproject/maid_robot_system_for_simulator:v2.0 .

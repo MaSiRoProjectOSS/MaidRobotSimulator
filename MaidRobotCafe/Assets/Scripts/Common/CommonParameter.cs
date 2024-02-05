@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file CommonParameter.cs
  * @author Claude (claude.masiro@gmail.com)
  * @brief Common Parameter for Maid Robot Simulator.
@@ -15,24 +15,17 @@ namespace MaidRobotSimulator.MaidRobotCafe
 {
     public class CommonParameter
     {
-        public static string ROBOT_NAME = "Misen";
-        public static string KEYBOARD_INPUT_NAME = "KeyboardInput";
-        public static string CARRY_OBJECTS_NAME = "CarryObjects";
-        public static string COMMUNICATOR_NAME = "Communicator";
-        public static string ANIMATOR_SPEED_NAME = "Speed";
-        public static string RIGHT_EYE_CAMERA_NAME = "RightEyeCamera";
-        public static string LEFT_EYE_CAMERA_NAME = "LeftEyeCamera";
-        public static string TRAY_NAME = "Tray";
-
-        public static string MOTION_SPEED_NAME = "MotionSpeed";
-
         public static SystemStructure.ROBOT_MODE INITIAL_ROBOT_MODE = SystemStructure.ROBOT_MODE.CATERING;
         public static float ROBOT_MODE_WAIT_TIME = 0.5f;
+
+        public static SystemStructure.PLAYER_MODE INITIAL_PLAYER_MODE = SystemStructure.PLAYER_MODE.FREE;
+        public static float PLAYER_MODE_WAIT_TIME = 0.5f;
 
         public static SystemStructure.COMMUNICATION_MODE ROBOT_COMMUNICATION_MODE = SystemStructure.COMMUNICATION_MODE.ROS;
         public static SystemStructure.SYNC_MODE ROBOT_SYNC_MODE = SystemStructure.SYNC_MODE.ASYNC;
         public static SystemStructure.CAMERA_MODE CAMERA_MODE_INIT = SystemStructure.CAMERA_MODE.FAR;
         public static float CAMERA_MODE_WAIT_TIME = 0.5f;
+        public static float PLAYER_CAMERA_MODE_WAIT_TIME = 0.5f;
 
         public static SystemStructure.ROBOT_HAND_HOLDING_SIDE HAND_HOLDING_SIDE_MODE_INIT = 
             SystemStructure.ROBOT_HAND_HOLDING_SIDE.RIGHT;
@@ -84,7 +77,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
         /* eye control */
         public static float POSE_TO_EYE_ANGLE_CENTER_Y = 0.5f;
         public static float POSE_TO_EYE_ANGLE_CENTER_Z = -0.5f;
-        public static float POSE_TO_EYE_ANGLE_PITCH_FACTOR = 1.0f * Mathf.Rad2Deg;
+        public static float POSE_TO_EYE_ANGLE_PITCH_FACTOR = -1.0f * Mathf.Rad2Deg;
         public static float POSE_TO_EYE_ANGLE_YAW_FACTOR = -1.0f * Mathf.Rad2Deg;
 
         /* initial root (hip) position */
@@ -101,6 +94,34 @@ namespace MaidRobotSimulator.MaidRobotCafe
         public static Vector3 LEFT_SHOULDER_BONE_DIRECTION_VECTOR =
             new Vector3(0.0f, 1.0f, 0.0f);
 
+        /* Player paramerter */
+        public static string PLAYER_CAMERA_NAME = "PlayerCamera";
+        public static float PLAYER_MOVE_VELOCITY = 2.0f;
+        public static float PLAYER_TURN_VELOCITY = 1.5f;
+
+        public static float PLAYER_PITCH_ANGLE_LIMIT_MAX = 60.0f * Mathf.Deg2Rad;
+        public static float PLAYER_PITCH_ANGLE_LIMIT_MIN = -60.0f * Mathf.Deg2Rad;
+
+        public static float PLAYER_IS_NEAR_ROBOT_DISTANCE = 1.5f;
+
+        public static Vector3 PLAYER_HAND_HOLDING_RELATIVE_POSITION = new Vector3(0.5f, 0.0f, 1.1f);
+        public static float PLAYER_HAND_HOLDING_POSITION_AVERAGING_WAIT = 0.05f;
+        public static float PLAYER_MOVE_HAND_SPEED_LIMIT = 0.5f;
+        public static float PLAYER_MOVE_HAND_SPEED_FACTOR = 0.2f;
+
+        /* Game Object names */
+        public static string ROBOT_NAME = "Misen";
+        public static string ENVIRONMENT_NAME = "Environment";
+        public static string INPUT_MANAGER_NAME = "Input";
+        public static string CARRY_OBJECTS_NAME = "CarryObjects";
+        public static string COMMUNICATOR_NAME = "Communicator";
+        public static string ANIMATOR_SPEED_NAME = "Speed";
+        public static string RIGHT_EYE_CAMERA_NAME = "RightEyeCamera";
+        public static string LEFT_EYE_CAMERA_NAME = "LeftEyeCamera";
+        public static string TRAY_NAME = "Tray";
+        public static string HAND_POINTER_NAME = "Hand_Pointer";
+
+        public static string MOTION_SPEED_NAME = "MotionSpeed";
 
         /* bones length */
         public static SystemStructure.ST_HUMANOID_BONES_LENGTH ROBOT_BONES_LENGTH =
@@ -390,6 +411,11 @@ namespace MaidRobotSimulator.MaidRobotCafe
         /* low level eye control */
         public static int EYE_FACE_TRACK_AVERAGE_BUFFER_LENGTH = 100;
 
+        public static float EYE_FACE_TRACK_PITCH_ANGLE_DEGREE_MIN = -10.0f;
+        public static float EYE_FACE_TRACK_PITCH_ANGLE_DEGREE_MAX = 10.0f;
+        public static float EYE_FACE_TRACK_YAW_ANGLE_DEGREE_MIN = -15.0f;
+        public static float EYE_FACE_TRACK_YAW_ANGLE_DEGREE_MAX = 15.0f;
+
         public static SystemStructure.ST_CARRY_OBJECT_POSITION_AND_ID[] CARRY_OBJECT_POSITION_AND_ID = {
             new SystemStructure.ST_CARRY_OBJECT_POSITION_AND_ID(new Vector3(-4.56f, 0.89f, 3.13f), SystemStructure.CARRY_OBJECT_PLACE.ON_FLASKET),
             new SystemStructure.ST_CARRY_OBJECT_POSITION_AND_ID(new Vector3(3.2f, 0.59f, -3.8f), SystemStructure.CARRY_OBJECT_PLACE.FRONT_OF_CHAIR_1),
@@ -416,6 +442,9 @@ namespace MaidRobotSimulator.MaidRobotCafe
 
         public static SystemStructure.ROBOT_CARRYING_STATE INITIAL_ROBOT_CARRYING_STATE = SystemStructure.ROBOT_CARRYING_STATE.NONE;
         public static float MAX_PICK_AND_PLACE_DISTANCE = 1.0f;
+
+        public static int SPACE_DIMENSION_NUM = 3;
+        public static int QUATERNION_DIMENSTION_NUM = 4;
 
         public static float QUARTER_CIRCLE_DEG = 90.0f;
         public static float HALF_CIRCLE_DEG = 180.0f;
@@ -497,35 +526,50 @@ namespace MaidRobotSimulator.MaidRobotCafe
         public static Vector3 ATTACHED_CAMERA_EULER_NEAR = new Vector3(0.0f, -180.0f, 0.0f);
 
         /* Inverse Kenimatics */
-        public static float RIGHT_UPPER_ARM_ROLL_ANGLE_MAX = 180.0f * Mathf.Deg2Rad;
-        public static float RIGHT_UPPER_ARM_ROLL_ANGLE_MIN = -180.0f * Mathf.Deg2Rad;
-        public static float RIGHT_UPPER_ARM_PITCH_ANGLE_MAX = 180.0f * Mathf.Deg2Rad;
-        public static float RIGHT_UPPER_ARM_PITCH_ANGLE_MIN = -180.0f * Mathf.Deg2Rad;
-        public static float RIGHT_UPPER_ARM_YAW_ANGLE_MAX = 0.1f * Mathf.Deg2Rad;
-        public static float RIGHT_UPPER_ARM_YAW_ANGLE_MIN = -0.1f * Mathf.Deg2Rad;
+        public static int IK_LINK_NUM = 2;
+        public static float RIGHT_UPPER_ARM_ROLL_ANGLE_MAX = 180.0f;
+        public static float RIGHT_UPPER_ARM_ROLL_ANGLE_MIN = -180.0f;
+        public static float RIGHT_UPPER_ARM_PITCH_ANGLE_MAX = 180.0f;
+        public static float RIGHT_UPPER_ARM_PITCH_ANGLE_MIN = -180.0f;
+        public static float RIGHT_UPPER_ARM_YAW_ANGLE_MAX = 180.0f;
+        public static float RIGHT_UPPER_ARM_YAW_ANGLE_MIN = -180.0f;
 
-        public static float RIGHT_LOWER_ARM_ROLL_ANGLE_MAX = 180.0f * Mathf.Deg2Rad;
-        public static float RIGHT_LOWER_ARM_ROLL_ANGLE_MIN = -180.0f * Mathf.Deg2Rad;
-        public static float RIGHT_LOWER_ARM_PITCH_ANGLE_MAX = 180.0f * Mathf.Deg2Rad;
-        public static float RIGHT_LOWER_ARM_PITCH_ANGLE_MIN = -180.0f * Mathf.Deg2Rad;
-        public static float RIGHT_LOWER_ARM_YAW_ANGLE_MAX = 0.1f * Mathf.Deg2Rad;
-        public static float RIGHT_LOWER_ARM_YAW_ANGLE_MIN = -0.1f * Mathf.Deg2Rad;
+        public static float RIGHT_LOWER_ARM_ROLL_ANGLE_MAX = 180.0f;
+        public static float RIGHT_LOWER_ARM_ROLL_ANGLE_MIN = -180.0f;
+        public static float RIGHT_LOWER_ARM_PITCH_ANGLE_MAX = 180.0f;
+        public static float RIGHT_LOWER_ARM_PITCH_ANGLE_MIN = -180.0f;
+        public static float RIGHT_LOWER_ARM_YAW_ANGLE_MAX = 180.0f;
+        public static float RIGHT_LOWER_ARM_YAW_ANGLE_MIN = -180.0f;
 
-        public static float LEFT_UPPER_ARM_ROLL_ANGLE_MAX = 180.0f * Mathf.Deg2Rad;
-        public static float LEFT_UPPER_ARM_ROLL_ANGLE_MIN = -180.0f * Mathf.Deg2Rad;
-        public static float LEFT_UPPER_ARM_PITCH_ANGLE_MAX = 180.0f * Mathf.Deg2Rad;
-        public static float LEFT_UPPER_ARM_PITCH_ANGLE_MIN = -180.0f * Mathf.Deg2Rad;
-        public static float LEFT_UPPER_ARM_YAW_ANGLE_MAX = 0.1f * Mathf.Deg2Rad;
-        public static float LEFT_UPPER_ARM_YAW_ANGLE_MIN = -0.1f * Mathf.Deg2Rad;
+        public static float LEFT_UPPER_ARM_ROLL_ANGLE_MAX = 180.0f;
+        public static float LEFT_UPPER_ARM_ROLL_ANGLE_MIN = -180.0f;
+        public static float LEFT_UPPER_ARM_PITCH_ANGLE_MAX = 180.0f;
+        public static float LEFT_UPPER_ARM_PITCH_ANGLE_MIN = -180.0f;
+        public static float LEFT_UPPER_ARM_YAW_ANGLE_MAX = 180.0f;
+        public static float LEFT_UPPER_ARM_YAW_ANGLE_MIN = -180.0f;
 
-        public static float LEFT_LOWER_ARM_ROLL_ANGLE_MAX = 180.0f * Mathf.Deg2Rad;
-        public static float LEFT_LOWER_ARM_ROLL_ANGLE_MIN = -180.0f * Mathf.Deg2Rad;
-        public static float LEFT_LOWER_ARM_PITCH_ANGLE_MAX = 180.0f * Mathf.Deg2Rad;
-        public static float LEFT_LOWER_ARM_PITCH_ANGLE_MIN = -180.0f * Mathf.Deg2Rad;
-        public static float LEFT_LOWER_ARM_YAW_ANGLE_MAX = 0.1f * Mathf.Deg2Rad;
-        public static float LEFT_LOWER_ARM_YAW_ANGLE_MIN = -0.1f * Mathf.Deg2Rad;
+        public static float LEFT_LOWER_ARM_ROLL_ANGLE_MAX = 180.0f;
+        public static float LEFT_LOWER_ARM_ROLL_ANGLE_MIN = -180.0f;
+        public static float LEFT_LOWER_ARM_PITCH_ANGLE_MAX = 180.0f;
+        public static float LEFT_LOWER_ARM_PITCH_ANGLE_MIN = -180.0f;
+        public static float LEFT_LOWER_ARM_YAW_ANGLE_MAX = 180.0f;
+        public static float LEFT_LOWER_ARM_YAW_ANGLE_MIN = -180.0f;
 
+        /* Environment */
         public static int TARGET_GAME_FRAME_RATE = 100;
+        public static string CAFE_SCENE_NAME = "CaffeT";
+        public static string EVENT_SCENE_NAME = "PlaneField";
+        public static string ROOM_SCENE_NAME = "RoomC";
+
+        public static string CANVAS_NAME = "Canvas";
+        public static string HOW_TO_USE_GAMEPAD_IMAGE_OBJECT_NAME = "how_to_use_gamepad_Image";
+        public static Vector3 HOW_TO_USE_GAMEPAD_IMAGE_POSITION_OFFSET_UNITY_AXIS = new Vector3(0.0f, 0.0f, 0.8f);
+
+        public static Rect PLAYER_CAMERA_RECT_NORMAL = new Rect(0.0f, 0.0f, 0.5f, 1.0f);
+        public static Rect PLAYER_CAMERA_RECT_FOCUS_TO_PLAYER_VIEW = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
+
+        public static float START_MENU_STATE_WAIT_TIME = 0.5f;
+        public static float MIN_GAMEPAD_STICK_VALUE = 0.005f;
 
         /* Debug parameters */
         public static int DEBUG_TEXT_FONT_SIZE = 20;
@@ -535,9 +579,9 @@ namespace MaidRobotSimulator.MaidRobotCafe
             DEBUG_TEXT_START_POS, 500, 40);
         public static Rect RIGHT_SIDE_DEBUG_TEXT_POS = new Rect(1000,
             DEBUG_TEXT_START_POS, 500, 40);
-        public static int RIGHT_SIDE_DEBUG_TEXT_OFFSET = 150;
+        public static int RIGHT_SIDE_DEBUG_TEXT_OFFSET = 250;
 
-        public static float FPS_DEBUG_TEXT_LPF_WEIGHT = 0.01f;
+        public static int FPS_DEBUG_TEXT_AVERAGE_BUFFER = 100;
 
         public static int IMAGE_PROCESS_SUCCESS_FLAG_BUFFER_LENGTH = 100;
 

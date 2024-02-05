@@ -20,10 +20,14 @@ In the Assets Scripts folder of the Project pane, there are C# scripts that comm
   - TrajectoryInterpolationManager
     - Trajectory interpolation functions.
 
-- KeyboardReceiver
+- Input
+  - InputManager
+    - Performs PC input processing.
+    - It is attached to the "KeyboardInput" game object.
   - KeyboardReceiver
     - Performs keyboard input processing.
-    - It is attached to the "KeyboardInput" game object.
+  - GamepadReceiver
+    - Performs gamepad input processing.
 
 - CarryObject
   - CarryObjectController
@@ -34,6 +38,10 @@ In the Assets Scripts folder of the Project pane, there are C# scripts that comm
   - EnvironmentController
     - Controls the game environment, such as camera operations.
     - It is attached to the game object "Environment".
+
+- Player
+  - PlayerController
+    - Controls the player.
 
 - Robot
   - RobotController
@@ -51,6 +59,11 @@ In the Assets Scripts folder of the Project pane, there are C# scripts that comm
     - Controls WaistDownUnit.
   - InverseKinematicsManager
     - Processes related to inverse kinematics algorithms.
+  - SimpleStepInverseKinematics
+    - Original inverse kinematics algorithm.
+    - Not completed yet.
+  - RigidBodyTree
+    - Rigid body and joint expression.
 
 - CommunicationReceiver
   - CommunicationReceiver
