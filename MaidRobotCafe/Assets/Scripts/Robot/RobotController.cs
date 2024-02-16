@@ -478,8 +478,12 @@ public class RobotController : MonoBehaviour
         Quaternion head_rotation = this._HeadUnitController.get_head_rotation();
         Vector3 head_angle = head_rotation.eulerAngles;
 
-        Vector3 upper_arm_euler_angles = this._InverseKinematicsManager.get_upper_arm_rotation_IK().eulerAngles;
-        Vector3 lower_arm_euler_angles = this._InverseKinematicsManager.get_lower_arm_rotation_IK().eulerAngles;
+        Vector3 upper_arm_euler_angles = Vector3.zero;
+        CommonTransform.quaternion_to_euler(this._InverseKinematicsManager.get_upper_arm_rotation_IK(),
+            ref upper_arm_euler_angles);
+        Vector3 lower_arm_euler_angles = Vector3.zero;
+        CommonTransform.quaternion_to_euler(this._InverseKinematicsManager.get_lower_arm_rotation_IK(),
+            ref lower_arm_euler_angles);
 
         this._logText = "InputMode: " + this._InputManager.get_current_input_mode().ToString() + Environment.NewLine
                       + "RobotX: " + position.x.ToString() + Environment.NewLine

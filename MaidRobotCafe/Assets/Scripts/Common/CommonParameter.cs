@@ -77,7 +77,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
         /* eye control */
         public static float POSE_TO_EYE_ANGLE_CENTER_Y = 0.5f;
         public static float POSE_TO_EYE_ANGLE_CENTER_Z = -0.5f;
-        public static float POSE_TO_EYE_ANGLE_PITCH_FACTOR = -1.0f * Mathf.Rad2Deg;
+        public static float POSE_TO_EYE_ANGLE_PITCH_FACTOR = -0.3f * Mathf.Rad2Deg;
         public static float POSE_TO_EYE_ANGLE_YAW_FACTOR = -1.0f * Mathf.Rad2Deg;
 
         /* initial root (hip) position */
@@ -96,11 +96,11 @@ namespace MaidRobotSimulator.MaidRobotCafe
 
         /* Player paramerter */
         public static string PLAYER_CAMERA_NAME = "PlayerCamera";
-        public static float PLAYER_MOVE_VELOCITY = 2.0f;
-        public static float PLAYER_TURN_VELOCITY = 1.5f;
+        public static float PLAYER_MOVE_VELOCITY = 1.0f;
+        public static float PLAYER_TURN_VELOCITY = 0.7f;
 
-        public static float PLAYER_PITCH_ANGLE_LIMIT_MAX = 60.0f * Mathf.Deg2Rad;
-        public static float PLAYER_PITCH_ANGLE_LIMIT_MIN = -60.0f * Mathf.Deg2Rad;
+        public static float PLAYER_PITCH_ANGLE_RAD_LIMIT_MAX = 60.0f * Mathf.Deg2Rad;
+        public static float PLAYER_PITCH_ANGLE_RAD_LIMIT_MIN = -60.0f * Mathf.Deg2Rad;
 
         public static float PLAYER_IS_NEAR_ROBOT_DISTANCE = 1.5f;
 
@@ -527,19 +527,21 @@ namespace MaidRobotSimulator.MaidRobotCafe
 
         /* Inverse Kenimatics */
         public static int IK_LINK_NUM = 2;
+        public static float ARM_YAW_ANGLE_LIMIT = 0.1f;
+
         public static float RIGHT_UPPER_ARM_ROLL_ANGLE_MAX = 180.0f;
         public static float RIGHT_UPPER_ARM_ROLL_ANGLE_MIN = -180.0f;
         public static float RIGHT_UPPER_ARM_PITCH_ANGLE_MAX = 180.0f;
         public static float RIGHT_UPPER_ARM_PITCH_ANGLE_MIN = -180.0f;
-        public static float RIGHT_UPPER_ARM_YAW_ANGLE_MAX = 180.0f;
-        public static float RIGHT_UPPER_ARM_YAW_ANGLE_MIN = -180.0f;
+        public static float RIGHT_UPPER_ARM_YAW_ANGLE_MAX = ARM_YAW_ANGLE_LIMIT;
+        public static float RIGHT_UPPER_ARM_YAW_ANGLE_MIN = -ARM_YAW_ANGLE_LIMIT;
 
         public static float RIGHT_LOWER_ARM_ROLL_ANGLE_MAX = 180.0f;
         public static float RIGHT_LOWER_ARM_ROLL_ANGLE_MIN = -180.0f;
         public static float RIGHT_LOWER_ARM_PITCH_ANGLE_MAX = 180.0f;
         public static float RIGHT_LOWER_ARM_PITCH_ANGLE_MIN = -180.0f;
-        public static float RIGHT_LOWER_ARM_YAW_ANGLE_MAX = 180.0f;
-        public static float RIGHT_LOWER_ARM_YAW_ANGLE_MIN = -180.0f;
+        public static float RIGHT_LOWER_ARM_YAW_ANGLE_MAX = ARM_YAW_ANGLE_LIMIT;
+        public static float RIGHT_LOWER_ARM_YAW_ANGLE_MIN = -ARM_YAW_ANGLE_LIMIT;
 
         public static float LEFT_UPPER_ARM_ROLL_ANGLE_MAX = 180.0f;
         public static float LEFT_UPPER_ARM_ROLL_ANGLE_MIN = -180.0f;

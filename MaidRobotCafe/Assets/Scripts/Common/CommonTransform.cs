@@ -73,6 +73,29 @@ namespace MaidRobotSimulator.MaidRobotCafe
             q.w = array[3];
         }
 
+        public static void quaternion_to_euler(Quaternion q, ref Vector3 euler_angles)
+        {
+            float q0 = q.w;
+            float q1 = q.x;
+            float q2 = q.y;
+            float q3 = q.z;
+
+            float q0q0 = q0 * q0;
+            float q0q1 = q0 * q1;
+            float q0q2 = q0 * q2;
+            float q0q3 = q0 * q3;
+            float q1q1 = q1 * q1;
+            float q1q2 = q1 * q2;
+            float q1q3 = q1 * q3;
+            float q2q2 = q2 * q2;
+            float q2q3 = q2 * q3;
+            float q3q3 = q3 * q3;
+
+            euler_angles.x = Mathf.Rad2Deg * Mathf.Atan2(2.0f * (q2q3 + q0q1), q0q0 - q1q1 - q2q2 + q3q3);
+            euler_angles.y = Mathf.Rad2Deg * Mathf.Asin(2.0f * (q0q2 - q1q3));
+            euler_angles.z = Mathf.Rad2Deg * Mathf.Atan2(2.0f * (q1q2 + q0q3), q0q0 + q1q1 - q2q2 - q3q3);
+        }
+
         public static void update_orientation(Vector3 position_in, Quaternion rotation_in,
             ref Vector3 position_out, ref Quaternion rotation_out, ref Vector3 euler_angle_out)
         {

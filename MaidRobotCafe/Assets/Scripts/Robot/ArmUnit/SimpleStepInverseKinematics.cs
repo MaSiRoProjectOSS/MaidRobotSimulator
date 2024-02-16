@@ -37,7 +37,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
         private const float _INNER_LOOP_ONE_STEP_SIZE = 0.5f;
 
         private const float _SINGULAR_POINT_LIMIT_BASE = 1e-4f;
-        
+
         private const float _INSIDE_STEP_FACTOR = 10.0f;
 
         private const float _ZERO_DIVIDE_LIMIT = 1e-10f;
@@ -96,7 +96,7 @@ namespace MaidRobotSimulator.MaidRobotCafe
             this._link_move_type = new LINK_TYPE[this._rigid_body_tree.get_link_num()];
             for (int joint_index = 0; joint_index < this._rigid_body_tree.get_link_num(); joint_index++)
             {
-                if(this._is_even_number(joint_index))
+                if (this._is_even_number(joint_index))
                 {
                     this._link_move_type[joint_index] = LINK_TYPE.HORIZONTAL_MOVE_LINK;
                 }
@@ -269,10 +269,6 @@ namespace MaidRobotSimulator.MaidRobotCafe
                             joint_index, this._rotation_before[joint_index]);
                     }
                 }
-                else
-                {
-                    break; /* exit outer loop. */
-                }
             }
         }
 
@@ -371,64 +367,73 @@ namespace MaidRobotSimulator.MaidRobotCafe
         private Quaternion _check_and_correct_with_rotation_limit(
             Quaternion q, int joint_index)
         {
-            Quaternion correct_q = Quaternion.identity;
+            Quaternion corrected_q = q;
 
-            Vector3 euler_angles = q.eulerAngles;
+            Vector3 euler_angles = this._quaternion_to_euler(q);
             float roll = this._round_angle_range_in_pi(euler_angles.x);
             float pitch = this._round_angle_range_in_pi(euler_angles.y);
             float yaw = this._round_angle_range_in_pi(euler_angles.z);
 
             RigidBodyTree.Joint.Constraint joint_constraints = this._rigid_body_tree.get_joint_constraint(joint_index);
 
-            bool need_for_correct = false;
+            /* roll */
+            bool need_for_correct_roll = false;
             float correct_roll = 0.0f;
             if (roll < joint_constraints.roll_min)
             {
                 correct_roll = joint_constraints.roll_min - roll;
-                need_for_correct = true;
+                need_for_correct_roll = true;
             }
             if (roll > joint_constraints.roll_max)
             {
                 correct_roll = joint_constraints.roll_max - roll;
-                need_for_correct = true;
+                need_for_correct_roll = true;
             }
 
+            if (true == need_for_correct_roll)
+            {
+                corrected_q = this._correct_only_roll_angle(correct_roll, corrected_q);
+            }
+
+            /* pitch */
+            bool need_for_correct_pitch = false;
             float correct_pitch = 0.0f;
             if (pitch < joint_constraints.pitch_min)
             {
                 correct_pitch = joint_constraints.pitch_min - pitch;
-                need_for_correct = true;
+                need_for_correct_pitch = true;
             }
             if (pitch > joint_constraints.pitch_max)
             {
                 correct_pitch = joint_constraints.pitch_max - pitch;
-                need_for_correct = true;
+                need_for_correct_pitch = true;
             }
 
+            if (true == need_for_correct_pitch)
+            {
+                corrected_q = this._correct_only_pitch_angle(correct_pitch, corrected_q);
+            }
+
+            /* yaw */
+            bool need_for_correct_yaw = false;
             float correct_yaw = 0.0f;
             if (yaw < joint_constraints.yaw_min)
             {
                 correct_yaw = joint_constraints.yaw_min - yaw;
-                need_for_correct = true;
+                need_for_correct_yaw = true;
             }
             if (yaw > joint_constraints.yaw_max)
             {
                 correct_yaw = joint_constraints.yaw_max - yaw;
-                need_for_correct = true;
+                need_for_correct_yaw = true;
             }
 
-            if (true == need_for_correct)
+            if (true == need_for_correct_yaw)
             {
-                float[] corrected_euler_angles = new float[_SPACE_DIMENSION_NUM] {
-                    correct_roll, correct_pitch, correct_yaw };
-                correct_q = q * this._euler_to_quaternion(corrected_euler_angles);
-            }
-            else
-            {
-                correct_q = q;
+                corrected_q = this._correct_only_yaw_angle(correct_yaw, corrected_q);
             }
 
-            return correct_q;
+            return corrected_q;
         }
 
         private Quaternion _rotate_quaternion_with_axis_and_angle(
@@ -504,6 +509,75 @@ namespace MaidRobotSimulator.MaidRobotCafe
             q.z = q3;
 
             return q;
+        }
+
+        private Vector3 _quaternion_to_euler(Quaternion q)
+        {
+            Vector3 euler_angles = new Vector3(0.0f, 0.0f, 0.0f);
+
+            float q0 = q.w;
+            float q1 = q.x;
+            float q2 = q.y;
+            float q3 = q.z;
+
+            float q0q0 = q0 * q0;
+            float q0q1 = q0 * q1;
+            float q0q2 = q0 * q2;
+            float q0q3 = q0 * q3;
+            float q1q1 = q1 * q1;
+            float q1q2 = q1 * q2;
+            float q1q3 = q1 * q3;
+            float q2q2 = q2 * q2;
+            float q2q3 = q2 * q3;
+            float q3q3 = q3 * q3;
+
+            euler_angles.x = Mathf.Rad2Deg * Mathf.Atan2(2.0f * (q2q3 + q0q1), q0q0 - q1q1 - q2q2 + q3q3);
+            euler_angles.y = Mathf.Rad2Deg * Mathf.Asin(2.0f * (q0q2 - q1q3));
+            euler_angles.z = Mathf.Rad2Deg * Mathf.Atan2(2.0f * (q1q2 + q0q3), q0q0 + q1q1 - q2q2 - q3q3);
+
+            return euler_angles;
+        }
+
+        private Quaternion _correct_only_roll_angle(float angle_deg, Quaternion q)
+        {
+            float angle_rad = Mathf.Deg2Rad * angle_deg;
+            Quaternion correct_q = new Quaternion(Mathf.Sin(angle_rad / 2.0f), 0, 0, Mathf.Cos(angle_rad / 2.0f));
+            Quaternion corrected_q = q * correct_q;
+
+            return corrected_q;
+        }
+
+        private Quaternion _correct_only_yaw_angle(float angle_deg, Quaternion q)
+        {
+            float angle_rad = Mathf.Deg2Rad * angle_deg;
+            Quaternion correct_q = new Quaternion(0, 0, Mathf.Sin(angle_rad / 2.0f), Mathf.Cos(angle_rad / 2.0f));
+            Quaternion corrected_q = correct_q * q;
+
+            return corrected_q;
+        }
+
+        private Quaternion _correct_only_pitch_angle(float angle_deg, Quaternion q)
+        {
+            Vector3 euler_angles = this._quaternion_to_euler(q);
+            float angle_rad = Mathf.Deg2Rad * angle_deg;
+
+            /* make roll zero */
+            Quaternion corrected_x_q = this._correct_only_roll_angle(-euler_angles.x, q);
+
+            /* make yaw zero */
+            Quaternion corrected_z_q = this._correct_only_yaw_angle(-euler_angles.z, corrected_x_q);
+
+            /* correct pitch */
+            Quaternion correct_q = new Quaternion(0, Mathf.Sin(angle_rad / 2.0f), 0, Mathf.Cos(angle_rad / 2.0f));
+            Quaternion corrected_y_q = corrected_z_q * correct_q;
+
+            /* reset yaw */
+            Quaternion reset_z_q = this._correct_only_yaw_angle(euler_angles.z, corrected_y_q);
+
+            /* reset roll */
+            Quaternion corrected_q = this._correct_only_roll_angle(euler_angles.x, reset_z_q);
+
+            return corrected_q;
         }
 
         private bool _is_even_number(int number)

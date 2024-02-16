@@ -176,7 +176,7 @@ public class PlayerController : MonoBehaviour
         this._pitch_angle_robot_axis += Time.deltaTime * this._turn_velocity_factor
             * this._first_person_velocity_reference_relative.look_up_down;
         this._pitch_angle_robot_axis = Mathf.Clamp(this._pitch_angle_robot_axis,
-            CommonParameter.PLAYER_PITCH_ANGLE_LIMIT_MIN, CommonParameter.PLAYER_PITCH_ANGLE_LIMIT_MAX);
+            CommonParameter.PLAYER_PITCH_ANGLE_RAD_LIMIT_MIN, CommonParameter.PLAYER_PITCH_ANGLE_RAD_LIMIT_MAX);
 
         float yaw_angular_speed = Time.deltaTime * this._turn_velocity_factor
             * this._first_person_velocity_reference_relative.turn_left_right;
